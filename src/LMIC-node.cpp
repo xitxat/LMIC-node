@@ -67,6 +67,9 @@ Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
 
 int counter = 0;
 unsigned long lastMillis = 0;
+
+float abPres;
+float calToSeaPres;
 //  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▀ █▀█ █▀▄
 //  █ █ ▀▀█ █▀▀ █▀▄   █   █ █ █ █ █▀▀   █▀▀ █ █ █ █
 //  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀▀ ▀ ▀ ▀▀ 
@@ -730,12 +733,19 @@ void runBMP(){
   bmp_temp->getEvent(&temp_event);
   bmp_pressure->getEvent(&pressure_event);
   
+  abPres = pressure_event.pressure;
+  calToSeaPres = abPres * exp (1040 / (29.3 * (temp + 273.15)));
+
     Serial.print(F("Temperature = "));
   Serial.print(temp_event.temperature);
   Serial.println(" *C");
 
   Serial.print(F("Pressure = "));
   Serial.print(pressure_event.pressure);
+  Serial.println(" hPa");
+
+    Serial.print(F("Calibrated Pressure = "));
+  Serial.print(calToSeaPres);
   Serial.println(" hPa");
 
   Serial.println();
@@ -861,7 +871,7 @@ void processDownlink(ostime_t txCompleteTimestamp, uint8_t fPort, uint8_t* data,
     }          
 }
 
-//  FUNCTIONS
+//  END FUNCTIONS
 //  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▀ █▀█ █▀▄
 //  █ █ ▀▀█ █▀▀ █▀▄   █   █ █ █ █ █▀▀   █▀▀ █ █ █ █
 //  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀▀ ▀ ▀ ▀▀ 
