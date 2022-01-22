@@ -60,6 +60,7 @@ const uint8_t payloadBufferLength = 4;    // Adjust to fit max payload length
 
 //B.MX
 #include <Adafruit_BMP280.h>
+//#include <AsyncMqttClient.h>
 
 Adafruit_BMP280 bmp; // use I2C interface
 Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
@@ -943,7 +944,7 @@ void loop()
 {
     os_runloop_once();
 
-        //B.MX
+        //B.MX  LOOP
 
     if (millis() - lastMillis > 10000) {
     lastMillis = millis();
