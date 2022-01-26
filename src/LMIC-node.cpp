@@ -72,6 +72,7 @@ unsigned long lastMillis = 0;
 
 float abPres;
 float calToSeaPres;
+float curTemp;
 //  █ █ █▀▀ █▀▀ █▀▄   █▀▀ █▀█ █▀▄ █▀▀   █▀▀ █▀█ █▀▄
 //  █ █ ▀▀█ █▀▀ █▀▄   █   █ █ █ █ █▀▀   █▀▀ █ █ █ █
 //  ▀▀▀ ▀▀▀ ▀▀▀ ▀ ▀   ▀▀▀ ▀▀▀ ▀▀  ▀▀▀   ▀▀▀ ▀ ▀ ▀▀ 
@@ -737,6 +738,8 @@ void runBMP(){
   
   abPres = pressure_event.pressure;
   calToSeaPres = abPres * exp (1040 / (29.3 * (temp_event.temperature + 273.15)));
+ curTemp = temp_event.temperature;
+
 
     Serial.print(F("Temperature = "));
   Serial.print(temp_event.temperature);
@@ -849,11 +852,13 @@ void processWork(ostime_t doWorkJobTimeStamp)
 
     // Prepare upstream data transmission at the next possible time.
     lpp.reset();
-    lpp.addTemperature(1, 123);
-    lpp.addAnalogInput(4, 123);
+    lpp.addTemperature(1, curTemp);
+    lpp.addBarometricPressure(3, calToSeaPres);
+    lpp.addAnalogInput(4, 120);
+
     LMIC_setTxData2(1, lpp.getBuffer(), lpp.getSize(), 0);
     Serial.println(F("Packet queued"));
-
+ 
         }
     }
 }    
