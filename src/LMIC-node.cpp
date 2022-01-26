@@ -60,7 +60,8 @@ const uint8_t payloadBufferLength = 4;    // Adjust to fit max payload length
 
 //B.MX
 #include <Adafruit_BMP280.h>
-//#include <AsyncMqttClient.h>
+#include <CayenneLPP.h>
+CayenneLPP lpp(51);
 
 Adafruit_BMP280 bmp; // use I2C interface
 Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
@@ -735,7 +736,7 @@ void runBMP(){
   bmp_pressure->getEvent(&pressure_event);
   
   abPres = pressure_event.pressure;
-  calToSeaPres = abPres * exp (1040 / (29.3 * (temp + 273.15)));
+  calToSeaPres = abPres * exp (1040 / (29.3 * (temp_event.temperature + 273.15)));
 
     Serial.print(F("Temperature = "));
   Serial.print(temp_event.temperature);
@@ -836,13 +837,23 @@ void processWork(ostime_t doWorkJobTimeStamp)
         }
         else
         {
+     
             // Prepare uplink payload.
-            uint8_t fPort = 10;
-            payloadBuffer[0] = counterValue >> 8;
-            payloadBuffer[1] = counterValue & 0xFF;
-            uint8_t payloadLength = 2;
+                   // MX
+            // uint8_t fPort = 10;
+            // payloadBuffer[0] = counterValue >> 8;
+            // payloadBuffer[1] = counterValue & 0xFF;
+            // uint8_t payloadLength = 2;
 
-            scheduleUplink(fPort, payloadBuffer, payloadLength);
+            // scheduleUplink(fPort, payloadBuffer, payloadLength);
+
+    // Prepare upstream data transmission at the next possible time.
+    lpp.reset();
+    lpp.addTemperature(1, 123);
+    lpp.addAnalogInput(4, 123);
+    LMIC_setTxData2(1, lpp.getBuffer(), lpp.getSize(), 0);
+    Serial.println(F("Packet queued"));
+
         }
     }
 }    
