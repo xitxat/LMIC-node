@@ -2,45 +2,7 @@
  *
  *  File:          LMIC-node.cpp
  * 
- *  Function:      LMIC-node main application file.
- * 
- *  Copyright:     Copyright (c) 2021 Leonel Lopes Parente
- *                 Copyright (c) 2018 Terry Moore, MCCI
- *                 Copyright (c) 2015 Thomas Telkamp and Matthijs Kooijman
- *
- *                 Permission is hereby granted, free of charge, to anyone 
- *                 obtaining a copy of this document and accompanying files to do, 
- *                 whatever they want with them without any restriction, including,
- *                 but not limited to, copying, modification and redistribution.
- *                 The above copyright notice and this permission notice shall be 
- *                 included in all copies or substantial portions of the Software.
- * 
- *                 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT ANY WARRANTY.
- * 
- *  License:       MIT License. See accompanying LICENSE file.
- * 
- *  Author:        Leonel Lopes Parente
- * 
- *  Description:   To get LMIC-node up and running no changes need to be made
- *                 to any source code. Only configuration is required
- *                 in platform-io.ini and lorawan-keys.h.
- * 
- *                 If you want to modify the code e.g. to add your own sensors,
- *                 that can be done in the two area's that start with
- *                 USER CODE BEGIN and end with USER CODE END. There's no need
- *                 to change code in other locations (unless you have a reason).
- *                 See README.md for documentation and how to use LMIC-node.
- * 
- *                 LMIC-node uses the concepts from the original ttn-otaa.ino 
- *                 and ttn-abp.ino examples provided with the LMIC libraries.
- *                 LMIC-node combines both OTAA and ABP support in a single example,
- *                 supports multiple LMIC libraries, contains several improvements
- *                 and enhancements like display support, support for downlinks,
- *                 separates LoRaWAN keys from source code into a separate keyfile,
- *                 provides formatted output to serial port and display
- *                 and supports many popular development boards out of the box.
- *                 To get a working node up and running only requires some configuration.
- *                 No programming or customization of source code required.
+
  * 
  *  Dependencies:  External libraries:
  *                 MCCI LoRaWAN LMIC library  https://github.com/mcci-catena/arduino-lmic
@@ -48,6 +10,23 @@
  *                 U8g2                       https://github.com/olikraus/u8g2
  *                 EasyLed                    https://github.com/lnlp/EasyLed
  *
+ * 
+ * 
+ * 
+ * ***********  Remote Set Up   *********
+ * 
+ * TTN Cayenne LLP
+ * TTN
+ *  add application webhook
+ *      
+ *  add payload formatter
+ *      uplink formatter type
+ * 
+ * Cayenne.mydevices
+ * add new device
+ *     lora/ttn
+ *     CayenneLLP
+ * 
  ******************************************************************************/
 // MX  My Git Fork
 #include "LMIC-node.h"
