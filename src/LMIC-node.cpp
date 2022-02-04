@@ -72,6 +72,8 @@ Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
 int counter = 0;
 unsigned long lastMillis = 0;
 
+const uint8_t blue = 2; //internal Blue LED
+
 float abPres;
 float calToSeaPres;
 float curTemp;
