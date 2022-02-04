@@ -73,6 +73,11 @@ int counter = 0;
 unsigned long lastMillis = 0;
 
 const uint8_t blue = 2; //internal Blue LED
+#define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
+#define TIME_TO_SLEEP  20        /* Time ESP32 will go to sleep (in seconds) */
+
+RTC_DATA_ATTR int bootCount = 0;
+
 
 float abPres;
 float calToSeaPres;
@@ -709,6 +714,9 @@ lmic_tx_error_t scheduleUplink(uint8_t fPort, uint8_t* data, uint8_t dataLength,
 //  FUNCTIONS
 //  B.MX            *********************************
 
+void goSleep(){
+esp_deep_sleep_start();
+}
 
 void startBMP(){
     unsigned status;
@@ -755,6 +763,7 @@ void runBMP(){
     Serial.print(F("Calibrated Pressure = "));
   Serial.print(calToSeaPres);
   Serial.println(" hPa");
+
 
   Serial.println();
 
@@ -857,7 +866,7 @@ void processWork(ostime_t doWorkJobTimeStamp)
     lpp.reset();
     lpp.addTemperature(1, curTemp);
     lpp.addBarometricPressure(3, calToSeaPres);
-    lpp.addAnalogInput(4, 120);
+    lpp.addAnalogInput(4, 122);
 
     LMIC_setTxData2(1, lpp.getBuffer(), lpp.getSize(), 0);
     Serial.println(F("Packet queued"));
@@ -942,6 +951,19 @@ void setup()
     //B.MX
 
  startBMP();
+ pinMode(blue, OUTPUT);
+
+  //Increment boot number and print it every reboot
+  ++bootCount;
+  Serial.println("Boot number: " + String(bootCount));
+
+    /*
+  First we configure the wake up source
+  We set our ESP32 to wake up every (5) seconds
+  */
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) +
+  " Seconds");
 
     //E.MX
 //  END SETUP
@@ -961,6 +983,7 @@ void setup()
 
 void loop() 
 {
+     digitalWrite(blue, 1);
     os_runloop_once();
 
         //B.MX  LOOP
@@ -970,7 +993,11 @@ void loop()
 // this send information to cayenne every 10 seconds,
 // so do the necessary calculation for 30 min.
 runBMP();
+digitalWrite(blue, 0);
+
 }
- 
+
+
+  //goSleep();
     //E.MX
-}
+}//X LOOP
